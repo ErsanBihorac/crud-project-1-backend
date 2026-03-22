@@ -1,13 +1,17 @@
 const uploadModel = require('../models/uploadModel');
 const admin = require('../config/database');
-const { v4: uuid } = require('uuid')
+const { v4: uuid } = require('uuid');
+const { initUploadSchema, userIdParamSchema, deleteUploadParamsSchema } = require('../schemas/uploadSchema');
 
 exports.initUpload = async (req, res) => {
-    const { userId } = req.params;
-    const { contentType } = req.body;
+    const params = userIdParamSchema.safeParse(req.params);
+    const body = initUploadSchema.safeParse(req.body);
 
-    if (!userId) return res.status(400).json({ message: "userId fehlt" });
-    if (!contentType) return res.status(400).json({ message: "contentType fehlt" });
+    if (!params.success) return res.status(400).json(params.error.format()); // err handling through zod validation
+    if (!body.success) return res.status(400).json(body.error.format()); // err handling through zod validation
+
+    const { userId } = params.data;
+    const { contentType } = body.data;
 
     const bucket = admin.storage().bucket();
     const uploadId = uuid();
@@ -41,8 +45,10 @@ exports.initUpload = async (req, res) => {
 }
 
 exports.getUploadsByUser = async (req, res) => {
-    const { userId } = req.params;
-    if (!userId) return res.status(400).json({ message: 'userId fehlt' });
+    const params = userIdParamSchema.safeParse(req.params);
+    if (!params.success) return res.status(400).json(params.error.format());
+
+    const { userId } = params.data;
 
     const uploads = await uploadModel.getUploadsByUserId(userId);
 
@@ -50,8 +56,10 @@ exports.getUploadsByUser = async (req, res) => {
 }
 
 exports.deleteUpload = async (req, res) => {
-    const { userId, uploadId } = req.params;
-    if (!userId || !uploadId) return res.status(400).json({ message: 'userId oder uploadId fehlt' });
+    const params = deleteUploadParamsSchema.safeParse(req.params);
+    if (!params.success) return res.status(404).json(params.error.format());
+
+    const { uploadId } = params.data;
 
     const deleted = await uploadModel.deleteUploadById(uploadId);
     if (!deleted) return res.status(404).json({ message: 'Upload nicht gefunden' });
