@@ -19,6 +19,7 @@ try {
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
+    storageBucket: process.env.STORAGE_BUCKET
 })
 
 module.exports = admin;
