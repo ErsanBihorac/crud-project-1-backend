@@ -1,5 +1,4 @@
 const userModel = require('../models/userModel');
-const admin = require('../config/database');
 
 // Die Controller.js datei wird verwendet um die Vordefinierten Datenbankzugriffsfunktionen aus der Model.js zu verwenden.
 // Dabei werden fehler abgefangen und die richtigen status codes mit inhalten weitergeleitet

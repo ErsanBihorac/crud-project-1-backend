@@ -4,6 +4,7 @@
 // Fehler sauber kapseln, eigene Fehler werfen die Controller in HTTP Antworten übersetzen
 
 const userModel = require('../models/userModel');
+const { createUserSchema } = require('../schemas/userSchema');
 
 const createUser = async (data) => {
   const result = createUserSchema.safeParse(data);
@@ -15,7 +16,7 @@ const createUser = async (data) => {
     throw error;
   };
 
-  return userModel.createUser(userData);
+  return userModel.createUser(result.data);
 };
 
 const deleteUser = async (id) => {

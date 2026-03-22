@@ -13,7 +13,7 @@ if (!process.env.FIREBASE_SERVICE_ACCOUNT_JSON) {
 let serviceAccount;
 try {
     serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_JSON);
-} catch (err) {
+} catch {
     throw new Error('FIREBASE_SERVICE_ACCOUNT_JSON ist kein gültiges JSON');
 }
 

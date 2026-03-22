@@ -7,6 +7,6 @@ const createUserSchema = z.object({
     password: z.string().min(1),
 });
 
-const result = createUserSchema.safeParse(req.body);
-
-if (!result.success) return res.status(400).json(result.error.format());
+module.exports = {
+    createUserSchema,
+};
